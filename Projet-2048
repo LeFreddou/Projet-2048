@@ -1,0 +1,165 @@
+#include <vector>
+#include <iostream>
+#include <random>
+using namespace std;
+
+typedef vector<vector<int>> Plateau;
+/** Des fonctions peuvent être ajoutés à ce fichier si besoin est (fonctions pour mettre à jour le score par exemple)
+ * //
+
+/** génère un Plateau de dimensions 4*4 ne contenant que des 0
+ *  @return un Plateau vide
+ **/
+Plateau plateauVide()
+{
+    Plateau plateauVide;
+    plateauVide = Plateau(4);
+    for (int i = 0; i < plateauVide.size(); i++)
+    {
+        plateauVide[i] = vector<int>(4);
+        for (int j; j < 4; j++)
+        {
+            plateauVide[i][j] = 0;
+        }
+    }
+    return plateauVide;
+}
+
+/** génère aléatoirement un 2 ou un 4 avec des probabilités respectives de 9/10 et 1/10
+ *  @return 2 ou 4
+ **/
+int tireDeuxOuQuatre()
+{
+    // srand(time(NULL));
+    return (2 + (2 * ((rand() % 10) / 9)));
+}
+
+/** génère deux nombres sur des cases aléatoires d'un Plateau vide
+ *  @return un Plateau en début de jeu
+ **/
+Plateau plateauInitial()
+{
+    Plateau plateau;
+    plateau = Plateau(4);
+    plateau = plateauVide();
+    int x1 = rand() % 4;
+    int y1 = rand() % 4;
+    int x2, y2;
+    do
+    {
+        x2 = rand() % 4;
+        y2 = rand() % 4;
+    } while ((x2 == x1) and (y2 == y1));
+    plateau[x1][y1] == tireDeuxOuQuatre();
+    plateau[x2][y2] == tireDeuxOuQuatre();
+    return plateau;
+}
+
+/** déplace les tuiles d'un Plateau vers la gauche et les combine si possible
+ *  @param plateau le Plateau
+ *  @return le Plateau une fois déplacé vers la gauche
+ **/
+Plateau deplacementGauche(Plateau plateau)
+{
+    for (int i = 0; i < plateau.size(); i++)
+    {
+        for (int j = 1; j < plateau[i].size(); j++)
+        {
+            int n = 0;
+            while ((n < j) and (plateau[i][j - n - 1] == 0))
+            {
+                n++;
+            }
+            int valeur = plateau[i][j];
+            plateau[i][j] = 0;
+            plateau[i][j - n] = valeur;
+            if ((j - n > 0) and (plateau[i][j - n] == plateau[i][j - n - 1]))
+            {
+                plateau[i][j - 1 - n] == 2 * plateau[i][j - n];
+                plateau[i][j - n] = 0;
+            }
+        }
+    }
+    return plateau;
+}
+
+/** déplace les tuiles d'un Plateau vers la droite et les combine si possible
+ *  @param plateau le Plateau
+ *  @return le Plateau une fois déplacé vers la droite
+ **/
+Plateau deplacementDroite(Plateau plateau)
+{
+    for (int i = 0; i < plateau.size(); i++)
+    {
+        for (int j = plateau.size() - 2; j >= 0; j = j - 1)
+        {
+            int n = 0;
+            while ((n + j < plateau.size() - 1) and (plateau[i][j + n + 1] == 0))
+            {
+                n++;
+            }
+            int valeur = plateau[i][j];
+            plateau[i][j] = 0;
+            plateau[i][j + n] = valeur;
+            if ((j + n < plateau.size() - 1) and (plateau[i][j + n] == plateau[i][j + n + 1]))
+            {
+                plateau[i][j + n + 1] == 2 * plateau[i][j + n];
+                plateau[i][j + n] = 0;
+            }
+        }
+    }
+    return plateau;
+}
+
+/** déplace les tuiles d'un Plateau vers le haut et les combine si possible
+ *  @param plateau le Plateau
+ *  @return le Plateau une fois déplacé vers le haut
+ **/
+Plateau deplacementHaut(Plateau plateau);
+
+/** déplace les tuiles d'un Plateau vers le bas et les combine si possible
+ *  @param plateau le Plateau
+ *  @return le Plateau une fois déplacé vers le bas
+ **/
+Plateau deplacementBas(Plateau plateau);
+
+/** déplace les tuiles d'un Plateau dans la direction donnée et génère une nouvelle tuile si le déplacement est valide
+ *  @param plateau le Plateau
+ *  @param direction la direction
+ *  @return le Plateau déplacé dans la direction
+ **/
+Plateau deplacement(Plateau plateau, int direction);
+
+/** affiche un Plateau
+ * @param p le Plateau
+ **/
+void dessine(Plateau p)
+{
+    for (int i = 0; i < p.size(); i++)
+    {
+        for (int j = 0; j < p[i].size(); j++)
+        {
+            cout << p[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+/** permet de savoir si une partie est terminée
+ *  @param plateau un Plateau
+ *  @return true si le plateau est vide, false sinon
+ **/
+bool estTermine(Plateau plateau);
+
+/** permet de savoir si une partie est gagnée
+ * @param plateau un Plateau
+ * @return true si le plateau contient un 2048, false sinon
+ **/
+bool estGagnant(Plateau plateau);
+
+int main()
+{
+    srand(time(NULL));
+    Plateau plateau = plateauInitial();
+    dessine(plateau);
+}

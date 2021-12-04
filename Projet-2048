@@ -9,6 +9,7 @@ typedef vector<vector<int>> Plateau;
 
 /** génère un Plateau de dimensions 4*4 ne contenant que des 0
  *  @return un Plateau vide
+ * Ceci est un test
  **/
 Plateau plateauVide()
 {

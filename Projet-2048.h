@@ -1,9 +1,13 @@
 #include <vector>
 using namespace std;
 
-typedef vector<vector<int> > Plateau;
-/** Des fonctions peuvent être ajoutés à ce fichier si besoin est (fonctions pour mettre à jour le score par exemple)
- * //
+class Plateau
+{
+public:
+    bool egale(Plateau t);
+    vector<vector<int>> plateau;
+    int score;
+};
 
 /** génère un Plateau de dimensions 4*4 ne contenant que des 0
  *  @return un Plateau vide

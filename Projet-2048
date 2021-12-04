@@ -1,28 +1,22 @@
-#include <vector>
-#include <iostream>
-#include <random>
-using namespace std;
+bool Plateau::egale(Plateau t)
+{
+    return (plateau == t.plateau);
+}
 
-typedef vector<vector<int>> Plateau;
-/** Des fonctions peuvent être ajoutés à ce fichier si besoin est (fonctions pour mettre à jour le score par exemple)
- * //
-
-/** génère un Plateau de dimensions 4*4 ne contenant que des 0
- *  @return un Plateau vide
- **/
 Plateau plateauVide()
 {
-    Plateau plateauVide;
-    plateauVide = Plateau(4);
-    for (int i = 0; i < plateauVide.size(); i++)
+    Plateau p;
+    p.plateau = vector<vector<int>>(4);
+    for (int i = 0; i < p.plateau.size(); i++)
     {
-        plateauVide[i] = vector<int>(4);
-        for (int j; j < 4; j++)
+        p.plateau[i] = vector<int>(4);
+        for (int j = 0; j < 4; j++)
         {
-            plateauVide[i][j] = 0;
+            p.plateau[i][j] = 0;
         }
     }
-    return plateauVide;
+    p.score = 0;
+    return p;
 }
 
 /** génère aléatoirement un 2 ou un 4 avec des probabilités respectives de 9/10 et 1/10
@@ -30,7 +24,6 @@ Plateau plateauVide()
  **/
 int tireDeuxOuQuatre()
 {
-    // srand(time(NULL));
     return (2 + (2 * ((rand() % 10) / 9)));
 }
 
@@ -39,9 +32,8 @@ int tireDeuxOuQuatre()
  **/
 Plateau plateauInitial()
 {
-    Plateau plateau;
-    plateau = Plateau(4);
-    plateau = plateauVide();
+    Plateau p;
+    p = plateauVide();
     int x1 = rand() % 4;
     int y1 = rand() % 4;
     int x2, y2;
@@ -50,116 +42,267 @@ Plateau plateauInitial()
         x2 = rand() % 4;
         y2 = rand() % 4;
     } while ((x2 == x1) and (y2 == y1));
-    plateau[x1][y1] == tireDeuxOuQuatre();
-    plateau[x2][y2] == tireDeuxOuQuatre();
-    return plateau;
+    p.plateau[x1][y1] = tireDeuxOuQuatre();
+    p.plateau[x2][y2] = tireDeuxOuQuatre();
+    return p;
 }
 
 /** déplace les tuiles d'un Plateau vers la gauche et les combine si possible
- *  @param plateau le Plateau
+ *  @param p le Plateau
  *  @return le Plateau une fois déplacé vers la gauche
  **/
-Plateau deplacementGauche(Plateau plateau)
+Plateau deplacementGauche(Plateau p)
 {
-    for (int i = 0; i < plateau.size(); i++)
+    for (int i = 0; i < p.plateau.size(); i++)
     {
-        for (int j = 1; j < plateau[i].size(); j++)
+        bool blocage = false;
+        for (int j = 1; j < p.plateau[i].size(); j++)
         {
             int n = 0;
-            while ((n < j) and (plateau[i][j - n - 1] == 0))
+            while ((n < j) and (p.plateau[i][j - n - 1] == 0))
             {
                 n++;
             }
-            int valeur = plateau[i][j];
-            plateau[i][j] = 0;
-            plateau[i][j - n] = valeur;
-            if ((j - n > 0) and (plateau[i][j - n] == plateau[i][j - n - 1]))
+            int valeur = p.plateau[i][j];
+            p.plateau[i][j] = 0;
+            p.plateau[i][j - n] = valeur;
+            if ((j - n > 0) and (blocage == false) and (p.plateau[i][j - n] == p.plateau[i][j - n - 1]))
             {
-                plateau[i][j - 1 - n] == 2 * plateau[i][j - n];
-                plateau[i][j - n] = 0;
+                p.plateau[i][j - n - 1] = 2 * p.plateau[i][j - n - 1];
+                p.score += p.plateau[i][j - n - 1];
+                p.plateau[i][j - n] = 0;
+                blocage = true;
+            }
+            else if (p.plateau[i][j - n] != 0)
+            {
+                blocage = false;
             }
         }
     }
-    return plateau;
+    return p;
 }
 
 /** déplace les tuiles d'un Plateau vers la droite et les combine si possible
- *  @param plateau le Plateau
+ *  @param p le Plateau
  *  @return le Plateau une fois déplacé vers la droite
  **/
-Plateau deplacementDroite(Plateau plateau)
+Plateau deplacementDroite(Plateau p)
 {
-    for (int i = 0; i < plateau.size(); i++)
+    for (int i = 0; i < p.plateau.size(); i++)
     {
-        for (int j = plateau.size() - 2; j >= 0; j = j - 1)
+        bool blocage = false;
+        for (int j = p.plateau.size() - 2; j >= 0; j--)
         {
             int n = 0;
-            while ((n + j < plateau.size() - 1) and (plateau[i][j + n + 1] == 0))
+            while ((n + j < p.plateau.size() - 1) and (p.plateau[i][j + n + 1] == 0))
             {
                 n++;
             }
-            int valeur = plateau[i][j];
-            plateau[i][j] = 0;
-            plateau[i][j + n] = valeur;
-            if ((j + n < plateau.size() - 1) and (plateau[i][j + n] == plateau[i][j + n + 1]))
+            int valeur = p.plateau[i][j];
+            p.plateau[i][j] = 0;
+            p.plateau[i][j + n] = valeur;
+            if ((j + n < p.plateau.size() - 1) and (blocage == false) and (p.plateau[i][j + n] == p.plateau[i][j + n + 1]))
             {
-                plateau[i][j + n + 1] == 2 * plateau[i][j + n];
-                plateau[i][j + n] = 0;
+                p.plateau[i][j + n + 1] = 2 * p.plateau[i][j + n + 1];
+                p.score += p.plateau[i][j + n + 1];
+                p.plateau[i][j + n] = 0;
+                blocage = true;
+            }
+            else if (p.plateau[i][j + n] != 0)
+            {
+                blocage = false;
             }
         }
     }
-    return plateau;
+    return p;
 }
 
 /** déplace les tuiles d'un Plateau vers le haut et les combine si possible
- *  @param plateau le Plateau
+ *  @param p le Plateau
  *  @return le Plateau une fois déplacé vers le haut
  **/
-Plateau deplacementHaut(Plateau plateau);
+Plateau deplacementHaut(Plateau p)
+{
+    for (int i = 0; i < p.plateau.size(); i++)
+    {
+        bool blocage = false;
+        for (int j = 1; j < p.plateau[i].size(); j++)
+        {
+            int n = 0;
+            while ((n < j) and (p.plateau[j - n - 1][i] == 0))
+            {
+                n++;
+            }
+            int valeur = p.plateau[j][i];
+            p.plateau[j][i] = 0;
+            p.plateau[j - n][i] = valeur;
+            if ((j - n > 0) and (blocage == false) and (p.plateau[j - n][i] == p.plateau[j - n - 1][i]))
+            {
+                p.plateau[j - n - 1][i] = 2 * p.plateau[j - n - 1][i];
+                p.score += p.plateau[j - n - 1][i];
+                p.plateau[j - n][i] = 0;
+                blocage = true;
+            }
+            else if (p.plateau[j - n][i] != 0)
+            {
+                blocage = false;
+            }
+        }
+    }
+    return p;
+}
 
 /** déplace les tuiles d'un Plateau vers le bas et les combine si possible
- *  @param plateau le Plateau
+ *  @param p le Plateau
  *  @return le Plateau une fois déplacé vers le bas
  **/
-Plateau deplacementBas(Plateau plateau);
+Plateau deplacementBas(Plateau p)
+{
+    for (int i = 0; i < p.plateau.size(); i++)
+    {
+        bool blocage = false;
+        for (int j = p.plateau.size() - 2; j >= 0; j = j - 1)
+        {
+            int n = 0;
+            while ((n + j < p.plateau.size() - 1) and (p.plateau[j + n + 1][i] == 0))
+            {
+                n++;
+            }
+            int valeur = p.plateau[j][i];
+            p.plateau[j][i] = 0;
+            p.plateau[j + n][i] = valeur;
+            if ((j + n < p.plateau.size() - 1) and (blocage == false) and (p.plateau[j + n][i] == p.plateau[j + n + 1][i]))
+            {
+                p.plateau[j + n + 1][i] = 2 * p.plateau[j + n][i];
+                p.score += p.plateau[j + n + 1][i];
+                p.plateau[j + n][i] = 0;
+                blocage = true;
+            }
+            else if (p.plateau[j + n][i] != 0)
+            {
+                blocage = false;
+            }
+        }
+    }
+    return p;
+}
 
 /** déplace les tuiles d'un Plateau dans la direction donnée et génère une nouvelle tuile si le déplacement est valide
- *  @param plateau le Plateau
+ *  @param p le Plateau
  *  @param direction la direction
  *  @return le Plateau déplacé dans la direction
  **/
-Plateau deplacement(Plateau plateau, int direction);
+Plateau deplacement(Plateau p, int direction)
+{
+    int points = p.score;
+    if (direction == 0)
+    {
+        if (p.egale(deplacementHaut(p)))
+        {
+            return p;
+        }
+        p = deplacementHaut(p);
+    }
+    else if (direction == 1)
+    {
+        if (p.egale(deplacementBas(p)))
+        {
+            return p;
+        }
+        p = deplacementBas(p);
+    }
+    else if (direction == 2)
+    {
+        if (p.egale(deplacementGauche(p)))
+        {
+            return p;
+        }
+        p = deplacementGauche(p);
+    }
+    else if (direction == 3)
+    {
+        if (p.egale(deplacementDroite(p)))
+        {
+            return p;
+        }
+        p = deplacementDroite(p);
+    }
+    int x;
+    int y;
+    do
+    {
+        x = rand() % (p.plateau.size());
+        y = rand() % (p.plateau[x].size());
+    } while (p.plateau[x][y] != 0);
+    p.plateau[x][y] = tireDeuxOuQuatre();
+    return p;
+}
 
 /** affiche un Plateau
  * @param p le Plateau
  **/
-void dessine(Plateau p)
+string dessine(Plateau p)
 {
-    for (int i = 0; i < p.size(); i++)
+    string dessin = "*************************\n";
+    for (int i = 0; i < p.plateau.size(); i++)
     {
-        for (int j = 0; j < p[i].size(); j++)
+        for (int j = 0; j < p.plateau[i].size(); j++)
         {
-            cout << p[i][j] << " ";
+            dessin += "*";
+            if (p.plateau[i][j] == 0)
+            {
+                dessin += "     ";
+            }
+            else if (p.plateau[i][j] < 10)
+            {
+                dessin += "  " + to_string(p.plateau[i][j]) + "  ";
+            }
+            else if (p.plateau[i][j] < 100)
+            {
+                dessin += " " + to_string(p.plateau[i][j]) + "  ";
+            }
+            else if (p.plateau[i][j] < 1000)
+            {
+                dessin += " " + to_string(p.plateau[i][j]) + " ";
+            }
+            else if (p.plateau[i][j] < 10000)
+            {
+                dessin += to_string(p.plateau[i][j]) + " ";
+            }
+            else
+            {
+                dessin += to_string(p.plateau[i][j]);
+            }
         }
-        cout << endl;
+        dessin += "*\n*************************\n";
     }
+    return dessin;
 }
 
 /** permet de savoir si une partie est terminée
- *  @param plateau un Plateau
+ *  @param p un Plateau
  *  @return true si le plateau est vide, false sinon
  **/
-bool estTermine(Plateau plateau);
+bool estTermine(Plateau p)
+{
+    return ((p.egale(deplacementGauche(p))) and (p.egale(deplacementHaut(p))) and (p.egale(deplacementDroite(p))) and (p.egale(deplacementBas(p))));
+}
 
 /** permet de savoir si une partie est gagnée
- * @param plateau un Plateau
+ * @param p un Plateau
  * @return true si le plateau contient un 2048, false sinon
  **/
-bool estGagnant(Plateau plateau);
-
-int main()
+bool estGagnant(Plateau p)
 {
-    srand(time(NULL));
-    Plateau plateau = plateauInitial();
-    dessine(plateau);
+    for (int i = 0; i < p.plateau.size(); i++)
+    {
+        for (int j = 0; j < p.plateau[i].size(); j++)
+        {
+            if (p.plateau[i][j] >= 2048)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }

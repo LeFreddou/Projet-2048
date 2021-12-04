@@ -1,3 +1,5 @@
+#include "projet-2048.h"
+
 bool Plateau::egale(Plateau t)
 {
     return (plateau == t.plateau);

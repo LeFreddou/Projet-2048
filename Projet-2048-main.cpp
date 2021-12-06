@@ -8,11 +8,11 @@ int main()
     cout << dessine(p);
     while (not estTermine(p))
     {
-        int direction;
+        string direction;
         do
         {
             cin >> direction;
-        } while ((direction < 0 or direction > 3) or (p.egale(deplacement(p, direction))));
+        } while (((direction.compare("z") != 0) and (direction.compare("s") != 0) and (direction.compare("q") != 0) and (direction.compare("d") != 0)) or (p.egale(deplacement(p, direction))));
         p = deplacement(p, direction);
         cout << dessine(p) << endl
              << "score : " << p.score << endl;

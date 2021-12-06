@@ -1,9 +1,21 @@
-#include "projet-2048.h"
+#include <vector>
+#include <iostream>
+#include <random>
+using namespace std;
+#include "Modele.h"
 
+/** Compare les plateaux de deux Plateaux
+ * @param t un Plateau
+ * @return true si les deux plateaux sont égaux
+ **/
 bool Plateau::egale(Plateau t)
 {
     return (plateau == t.plateau);
 }
+
+/** génère un Plateau de dimensions 4*4 ne contenant que des 0 avec un score de 0
+ *  @return un Plateau vide
+ **/
 
 Plateau plateauVide()
 {
@@ -194,10 +206,9 @@ Plateau deplacementBas(Plateau p)
  *  @param direction la direction
  *  @return le Plateau déplacé dans la direction
  **/
-Plateau deplacement(Plateau p, int direction)
+Plateau deplacement(Plateau p, string direction)
 {
-    int points = p.score;
-    if (direction == 0)
+    if (direction == "z")
     {
         if (p.egale(deplacementHaut(p)))
         {
@@ -205,7 +216,7 @@ Plateau deplacement(Plateau p, int direction)
         }
         p = deplacementHaut(p);
     }
-    else if (direction == 1)
+    else if (direction == "s")
     {
         if (p.egale(deplacementBas(p)))
         {
@@ -213,7 +224,7 @@ Plateau deplacement(Plateau p, int direction)
         }
         p = deplacementBas(p);
     }
-    else if (direction == 2)
+    else if (direction == "q")
     {
         if (p.egale(deplacementGauche(p)))
         {
@@ -221,7 +232,7 @@ Plateau deplacement(Plateau p, int direction)
         }
         p = deplacementGauche(p);
     }
-    else if (direction == 3)
+    else if (direction == "d")
     {
         if (p.egale(deplacementDroite(p)))
         {
@@ -245,12 +256,13 @@ Plateau deplacement(Plateau p, int direction)
  **/
 string dessine(Plateau p)
 {
-    string dessin = "*************************\n";
+    string dessin = "\n*************************\n";
     for (int i = 0; i < p.plateau.size(); i++)
     {
         for (int j = 0; j < p.plateau[i].size(); j++)
         {
-            dessin += "*";
+            dessin += "\e[37m*";
+            dessin += "\e[" + to_string(31 + (p.plateau[i][j]) % 5) + "m";
             if (p.plateau[i][j] == 0)
             {
                 dessin += "     ";
@@ -276,7 +288,7 @@ string dessine(Plateau p)
                 dessin += to_string(p.plateau[i][j]);
             }
         }
-        dessin += "*\n*************************\n";
+        dessin += "\e[37m*\n*************************\n";
     }
     return dessin;
 }

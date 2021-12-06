@@ -1,5 +1,8 @@
-#include "projet-2048.h"
-
+#include <vector>
+#include <iostream>
+#include <random>
+using namespace std;
+#include "Modele.h"
 
 int main()
 {
@@ -15,7 +18,8 @@ int main()
         } while (((direction.compare("z") != 0) and (direction.compare("s") != 0) and (direction.compare("q") != 0) and (direction.compare("d") != 0)) or (p.egale(deplacement(p, direction))));
         p = deplacement(p, direction);
         cout << dessine(p) << endl
-             << "score : " << p.score << endl;
+             << "score : " << p.score << endl
+             << endl;
     }
     if (estGagnant(p))
     {

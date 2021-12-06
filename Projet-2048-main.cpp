@@ -2,7 +2,7 @@
 #include <iostream>
 #include <random>
 using namespace std;
-#include "Modele.h"
+#include "Projet-2048.h"
 
 int main()
 {

@@ -1,15 +1,21 @@
 #include <vector>
+#include <iostream>
+#include <random>
 using namespace std;
 
 class Plateau
 {
 public:
+    /** Compare les plateaux de deux Plateaux
+     * @param t un Plateau
+     * @return true si les deux plateaux sont égaux
+     **/
     bool egale(Plateau t);
     vector<vector<int>> plateau;
     int score;
 };
 
-/** génère un Plateau de dimensions 4*4 ne contenant que des 0
+/** génère un Plateau de dimensions 4*4 ne contenant que des 0 avec un score de 0
  *  @return un Plateau vide
  **/
 Plateau plateauVide();
@@ -51,23 +57,24 @@ Plateau deplacementBas(Plateau plateau);
 /** déplace les tuiles d'un Plateau dans la direction donnée et génère une nouvelle tuile si le déplacement est valide
  *  @param plateau le Plateau
  *  @param direction la direction
- *  @return le Plateau déplacé dans la direction
+ *  @return le Plateau si le déplacement est invalide, sinon le Plateau déplacé dans la direction
  **/
-Plateau deplacement(Plateau plateau, int direction);
+Plateau deplacement(Plateau plateau, string direction);
 
 /** affiche un Plateau
  * @param p le Plateau
+ * @return l'affichage du plateau
  **/
 string dessine(Plateau p);
 
 /** permet de savoir si une partie est terminée
  *  @param plateau un Plateau
- *  @return true si le plateau est vide, false sinon
+ *  @return true si aucun déplacement n'est possible, false sinon
  **/
 bool estTermine(Plateau plateau);
 
 /** permet de savoir si une partie est gagnée
  * @param plateau un Plateau
- * @return true si le plateau contient un 2048, false sinon
+ * @return true si le plateau contient un 2048 ou plus, false sinon
  **/
 bool estGagnant(Plateau plateau);

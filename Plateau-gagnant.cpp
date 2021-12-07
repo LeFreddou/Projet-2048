@@ -7,7 +7,9 @@ using namespace std;
 int main()
 {
     srand(time(NULL));
-    Plateau p = {{1024,1024,512,256},{512,256,512,128},{256,128,64,32},{64,512,2,0}};
+    Plateau p;
+    p.plateau = {{1024,1024,512,256},{512,256,512,128},{256,128,64,32},{64,512,2,0}};
+    p.score = 42484;
     cout << dessine(p);
     while (not estTermine(p))
     {
